@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-08",
+  "skill": {
+    "path": "skills/handoff/SKILL.md",
+    "sha256": "bcf21009c41bbd2aec4a50f134cc5f63f02a380ce85c7471add9038be1c2f5b0"
+  },
+  "programs": [
+    {
+      "path": "skills/handoff/scripts/collect_handoff_state.py",
+      "sha256": "5009b264d2f0b473bdc209b6bae2ba92b98b34e3ec78828b6ac4169a12179fa8"
+    }
+  ],
+  "example": {
+    "path": "examples/synthetic-repo",
+    "tree_sha256": "5793812d5f736654ebd0f8caf3b65b45bee204fc98827b4f4b7b5679b9746c33",
+    "note": "Synthetic. tree_sha256 is the SHA-256 of one line per file, in path order, skipping .DS_Store and __pycache__: the path relative to examples/synthetic-repo, a NUL byte, the file's SHA-256 in hex, and a newline."
+  },
+  "agent": {
+    "invoked_the_skill": false,
+    "note": "No agent invoked the skill to produce this evidence. scripts/record_session.py ran the collector through bash, on a synthetic repository, while this release was being prepared."
+  },
+  "invocation": {
+    "commands": [
+      "collect() { python3 skills/handoff/scripts/collect_handoff_state.py \"$@\"; }",
+      "collect --repo demo-repo --recent 2",
+      "collect --repo demo-repo --state-file ../outside.json",
+      "collect --repo not-a-repo"
+    ],
+    "interpreter": "Python 3.13.13",
+    "working_directory": "a throwaway directory holding a copy of skills/, a git repository named demo-repo built from examples/synthetic-repo/ (two commits with a fixed author and date, the first with greeter.py lacking its --version flag; the working tree then holds greeter.py as the example has it, so the flag is the one uncommitted change), and an empty directory named not-a-repo",
+    "environment": "PATH starting with a directory that holds a python3 link to the recording interpreter, followed by the caller's PATH; PYTHONDONTWRITEBYTECODE=1, LC_ALL=C, GIT_CONFIG_GLOBAL=/dev/null, GIT_CONFIG_NOSYSTEM=1, and GIT_CEILING_DIRECTORIES set to the parent of the throwaway directory"
+  },
+  "output": {
+    "path": "evidence/transcripts/collector-session.txt",
+    "sha256": "0be1915f5ff6b04d7a8aad1c740511b1c2409aeae89a904dc436558e5ee6be32",
+    "edited": true,
+    "transforms": [
+      {
+        "name": "replace-capture-root",
+        "what": "Every occurrence of the absolute path of the throwaway capture directory was replaced with /work by one str.replace call in scripts/record_session.py. Nothing else was changed."
+      }
+    ],
+    "note": "scripts/record_session.py wrote the transcript after running the commands. The first line is the shell function; it was not run on its own, and each later command ran in a new bash -c with the function defined first. For each later command the script wrote the command line, then the command's stdout and stderr together, then an echo line and an exit status line taken from the command's exit status."
+  }
+}

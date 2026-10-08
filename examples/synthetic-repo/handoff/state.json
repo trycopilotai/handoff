@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-01-15T10:30:00Z",
+  "agents": [
+    {
+      "agent_id": "cli",
+      "owner": "agent-a",
+      "model": "model-a",
+      "surface": "Claude Code",
+      "chat_uuid": "session-a",
+      "status": "active",
+      "detail_path": "handoff/agents/cli.md",
+      "owned_scopes": [
+        { "name": "cli", "paths": ["greeter.py"] }
+      ],
+      "updated_at": "2026-01-15T10:30:00Z"
+    },
+    {
+      "agent_id": "docs",
+      "owner": "agent-b",
+      "model": "model-b",
+      "surface": "Codex",
+      "chat_uuid": "session-b",
+      "status": "waiting",
+      "detail_path": "",
+      "owned_scopes": [
+        { "name": "docs", "paths": ["README.md"] }
+      ],
+      "updated_at": "2026-01-15T10:05:00Z"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title description">
+  <title id="title">Animated handoff collector session</title>
+  <desc id="description">A terminal runs the handoff collector on a synthetic repository and prints one ownership table row per agent, is refused a state file outside the repository with exit status 2, and is told a plain directory is not a git repository with exit status 1.</desc>
+  <style>
+    .step-1 {
+      opacity: 0;
+      animation: reveal-1 12s infinite;
+    }
+    @keyframes reveal-1 {
+      0%, 6% { opacity: 0; }
+      10%, 94% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .step-2 {
+      opacity: 0;
+      animation: reveal-2 12s infinite;
+    }
+    @keyframes reveal-2 {
+      0%, 40% { opacity: 0; }
+      44%, 94% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .step-3 {
+      opacity: 0;
+      animation: reveal-3 12s infinite;
+    }
+    @keyframes reveal-3 {
+      0%, 64% { opacity: 0; }
+      68%, 94% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .step-1, .step-2, .step-3 {
+        opacity: 1;
+        animation: none;
+      }
+    }
+  </style>
+  <rect width="1280" height="720" rx="24" fill="#101418" />
+  <circle cx="40" cy="44" r="9" fill="#ff6b6b" />
+  <circle cx="70" cy="44" r="9" fill="#ffd166" />
+  <circle cx="100" cy="44" r="9" fill="#55d6be" />
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16">
+    <text x="40" y="108" fill="#f7fbff" xml:space="preserve">$ collect() { python3 skills/handoff/scripts/collect_handoff_state.py &quot;$@&quot;; }</text>
+    <g class="step-1">
+      <text x="40" y="148" fill="#f7fbff" xml:space="preserve">$ collect --repo demo-repo --recent 2</text>
+      <text x="40" y="174" fill="#f7fbff" xml:space="preserve">- Generated UTC: `2026-10-08T17:45:14+00:00`</text>
+      <text x="40" y="200" fill="#f7fbff" xml:space="preserve">- Repo: `/work/demo-repo`</text>
+      <text x="40" y="226" fill="#f7fbff" xml:space="preserve">- Branch: `main`</text>
+      <text x="40" y="252" fill="#f7fbff" xml:space="preserve">- HEAD: `0a6532a` (`0a6532a944f68b103dfe39f861097af0e851ce45`)</text>
+      <text x="40" y="278" fill="#f7fbff" xml:space="preserve">- Upstream: `(none)`</text>
+      <text x="40" y="304" fill="#f7fbff" xml:space="preserve">- Ahead / behind: `unknown` / `unknown`</text>
+      <text x="40" y="330" fill="#f7fbff" xml:space="preserve">| Agent | Model / Surface | Session | Status | Detail | Scopes | Updated |</text>
+      <text x="40" y="356" fill="#f7fbff" xml:space="preserve">| --- | --- | --- | --- | --- | --- | --- |</text>
+      <text x="40" y="382" fill="#f7fbff" xml:space="preserve">| agent-a | model-a / Claude Code | session-a | active | handoff/agents/cli.md | cli | 2026-01-15T10:30:00Z |</text>
+      <text x="40" y="408" fill="#f7fbff" xml:space="preserve">| agent-b | model-b / Codex | session-b | waiting |  | docs | 2026-01-15T10:05:00Z |</text>
+      <text x="40" y="434" fill="#55d6be" xml:space="preserve">exit status: 0</text>
+    </g>
+    <g class="step-2">
+      <text x="40" y="474" fill="#f7fbff" xml:space="preserve">$ collect --repo demo-repo --state-file ../outside.json</text>
+      <text x="40" y="500" fill="#ffd166" xml:space="preserve">--state-file must be a relative path that resolves inside /work/demo-repo: ../outside.json</text>
+      <text x="40" y="526" fill="#ffd166" xml:space="preserve">exit status: 2</text>
+    </g>
+    <g class="step-3">
+      <text x="40" y="566" fill="#f7fbff" xml:space="preserve">$ collect --repo not-a-repo</text>
+      <text x="40" y="592" fill="#ffd166" xml:space="preserve">not a git repository: /work/not-a-repo</text>
+      <text x="40" y="618" fill="#ffd166" xml:space="preserve">fatal: not a git repository (or any of the parent directories): .git</text>
+      <text x="40" y="644" fill="#ffd166" xml:space="preserve">exit status: 1</text>
+    </g>
+  </g>
+  <text x="40" y="692" fill="#a7bac5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">Reconstructed from evidence/transcripts/collector-session.txt</text>
+</svg>

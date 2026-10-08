@@ -1,0 +1,57 @@
+$ collect() { python3 skills/handoff/scripts/collect_handoff_state.py "$@"; }
+$ collect --repo demo-repo --recent 2
+# Handoff State Collection
+
+- Generated UTC: `2026-10-08T17:45:14+00:00`
+- Repo: `/work/demo-repo`
+- Branch: `main`
+- HEAD: `0a6532a` (`0a6532a944f68b103dfe39f861097af0e851ce45`)
+- Upstream: `(none)`
+- Ahead / behind: `unknown` / `unknown`
+
+## Status
+
+```text
+## main
+ M greeter.py
+```
+
+## Dirty Files
+
+```text
+ M greeter.py
+```
+
+## Recent Commits
+
+```text
+0a6532a (HEAD -> main) Record a handoff checkpoint
+ab7e2fe Add the greeter
+```
+
+## Submodules
+
+_None._
+
+## Nested Submodule Status
+
+_No submodules._
+
+## Agent Ownership Summary
+
+| Agent | Model / Surface | Session | Status | Detail | Scopes | Updated |
+| --- | --- | --- | --- | --- | --- | --- |
+| agent-a | model-a / Claude Code | session-a | active | handoff/agents/cli.md | cli | 2026-01-15T10:30:00Z |
+| agent-b | model-b / Codex | session-b | waiting |  | docs | 2026-01-15T10:05:00Z |
+
+$ echo "exit status: $?"
+exit status: 0
+$ collect --repo demo-repo --state-file ../outside.json
+--state-file must be a relative path that resolves inside /work/demo-repo: ../outside.json
+$ echo "exit status: $?"
+exit status: 2
+$ collect --repo not-a-repo
+not a git repository: /work/not-a-repo
+fatal: not a git repository (or any of the parent directories): .git
+$ echo "exit status: $?"
+exit status: 1
