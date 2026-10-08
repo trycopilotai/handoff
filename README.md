@@ -137,7 +137,7 @@ fails.
 
 ```sh
 set -eu
-release=v0.1.2
+release=v0.1.3
 install_target="$HOME/.claude/skills/handoff"
 install_parent="$(dirname "$install_target")"
 mkdir -p "$install_parent"
@@ -174,7 +174,7 @@ the block above is `install_target`.
 
 ```sh
 set -eu
-release=v0.1.2
+release=v0.1.3
 install_target="$HOME/.agents/skills/handoff"
 install_parent="$(dirname "$install_target")"
 mkdir -p "$install_parent"
@@ -288,8 +288,10 @@ directory; the manifest records it with `"published": false`.
 the clients' raw output, which is not committed. It keeps
 each tool call's name, arguments and status, not the tool's
 output, and cuts any argument string longer than 300
-characters, marking the cut `...[N more characters]`. Its
-only other edits are the ones `evidence/demo-manifest.json`
+characters, marking the cut `...[N more characters]`, and
+writes each call's arguments as JSON with sorted keys. Its
+replacements, applied to the final message as well, are the
+ones `evidence/demo-manifest.json`
 declares for each invocation: `replace-isolation-root`,
 `replace-plugin-root`, `replace-capture-root`,
 `replace-scratch-root`, `replace-home` and

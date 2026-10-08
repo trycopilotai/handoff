@@ -88,7 +88,7 @@
       ],
       "invoked_the_skill": true,
       "outcome": "Loaded the skill (Skill handoff:handoff), read AGENTS.md and the registry, ran the collector once (exit status not in the stream; reported ok), ran make check, and wrote HANDOFF.md and HANDOFF.log.md (one entry); it left handoff/state.json unchanged, saying the lane was already correct, and committed nothing.",
-      "rendering": "Besides the transforms, scripts/render_invocation.py cuts every tool-call argument string longer than 300 characters and marks the cut as ...[N more characters]; the transforms run on each whole string before it is cut. It writes only each call's name, arguments and status, not tool output."
+      "rendering": "Besides the transforms, scripts/render_invocation.py cuts every tool-call argument string longer than 300 characters and marks the cut as ...[N more characters]; the transforms run on each whole string before it is cut. It writes only each call's name, arguments (as JSON with sorted keys) and status, not tool output."
     },
     {
       "product": "Codex",
@@ -131,7 +131,7 @@
       ],
       "invoked_the_skill": true,
       "outcome": "Read .agents/skills/handoff/SKILL.md and its three references, ran the collector with --json (exit 0) and make check (exit 0), and wrote HANDOFF.md and HANDOFF.log.md; it left handoff/state.json unchanged and committed nothing.",
-      "rendering": "Besides the transforms, scripts/render_invocation.py cuts every tool-call argument string longer than 300 characters and marks the cut as ...[N more characters]; the transforms run on each whole string before it is cut. It writes only each call's name, arguments and status, not tool output."
+      "rendering": "Besides the transforms, scripts/render_invocation.py cuts every tool-call argument string longer than 300 characters and marks the cut as ...[N more characters]; the transforms run on each whole string before it is cut. It writes only each call's name, arguments (as JSON with sorted keys) and status, not tool output."
     },
     {
       "product": "Claude Code",

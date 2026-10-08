@@ -5,10 +5,11 @@
         --prompt prompt.txt --root <fixture> --plugin-root <clone> \
         --home <home> --hostname <name> raw.jsonl > transcript.txt
 
-Writes the prompt, every tool call (name and arguments, each
-argument string cut at LIMIT characters), each call's status
-where the raw output records it, and the final message
-verbatim. The only edits, in this order, each applied to a
+Writes the prompt, every tool call (its name, and its arguments
+re-serialised as JSON with sorted keys, each argument string cut
+at LIMIT characters), each call's status where the raw output
+records it, and the final message with the same replacements
+applied. The replacements, in this order, each applied to a
 whole path prefix and never inside a longer name: an
 --isolation-root becomes /iso, each --plugin-root (the
 directory the client loaded the skill from) /plugin, the
