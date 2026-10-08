@@ -483,6 +483,11 @@ class SocialPreviewTest(unittest.TestCase):
 
 
 class SupportFilesTest(unittest.TestCase):
+    def test_security_scope_names_every_build_script(self) -> None:
+        text = read(ROOT / "SECURITY.md")
+        for path in sorted((ROOT / "scripts").glob("*.py")) + [ROOT / "assets" / "build.py"]:
+            self.assertIn("`%s`" % path.relative_to(ROOT), text)
+
     def test_license_is_mit(self) -> None:
         self.assertTrue(read(ROOT / "LICENSE").startswith("MIT License\n"))
 

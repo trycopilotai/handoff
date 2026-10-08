@@ -59,7 +59,10 @@ private channel.
   makes two commits there, runs the collector through
   `bash`, and rewrites the transcript and the manifest; with
   `RECORD_RAW_DIR` set it also writes two files into that
-  directory. `tests/test_collect_handoff_state.py` builds
+  directory. `scripts/render_invocation.py` reads a
+  client's raw JSON-lines output and a prompt file, writes a
+  transcript to standard output, and runs no other program.
+  `tests/test_collect_handoff_state.py` builds
   git repositories in temporary directories and runs the
   collector against them. `tests/test_integrations.py` runs
   `git` against the repository root and rebuilds the

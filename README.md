@@ -137,7 +137,7 @@ fails.
 
 ```sh
 set -eu
-release=v0.1.1
+release=v0.1.2
 install_target="$HOME/.claude/skills/handoff"
 install_parent="$(dirname "$install_target")"
 mkdir -p "$install_parent"
@@ -174,7 +174,7 @@ the block above is `install_target`.
 
 ```sh
 set -eu
-release=v0.1.1
+release=v0.1.2
 install_target="$HOME/.agents/skills/handoff"
 install_parent="$(dirname "$install_target")"
 mkdir -p "$install_parent"
@@ -264,7 +264,8 @@ Each client was started on one synthetic fixture with the
 v0.1.0 skill text: a small Python repository in one commit,
 with a `handoff/state.json` registry of one agent lane and an
 uncommitted `--shout` flag in `greeter.py`, and a task note in
-the prompt. This is one run per client, not a benchmark.
+the prompt. `skills/handoff/` is unchanged since v0.1.0. This
+is one run per client, not a benchmark.
 
 - [`evidence/transcripts/2026-10-08-claude-code-invocation.txt`](evidence/transcripts/2026-10-08-claude-code-invocation.txt):
   Claude Code 2.1.220, invoked with `/handoff`. It loaded the
