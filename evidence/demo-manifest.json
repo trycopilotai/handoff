@@ -42,5 +42,111 @@
       }
     ],
     "note": "scripts/record_session.py wrote the transcript after running the commands. The first line is the shell function; it was not run on its own, and each later command ran in a new bash -c with the function defined first. For each later command the script wrote the command line, then the command's stdout and stderr together, then an echo line and an exit status line taken from the command's exit status."
-  }
+  },
+  "invocations": [
+    {
+      "product": "Claude Code",
+      "version": "2.1.220",
+      "model": "claude-sonnet-5",
+      "skill_source": "--plugin-dir pointing at a fresh depth-1 clone of this repository's tag v0.1.0, the only other entry beside the fixture in a fresh temporary directory",
+      "invocation": "/handoff",
+      "prompt": "Use /handoff to write a handoff checkpoint for this repository. Task note: I was adding a --shout flag to greeter.py that prints the greeting in upper case. The flag is parsed and applied but has no test yet, and README.md does not mention it. Next I plan to add the test, then document the flag. Stay inside this directory.",
+      "fixture": "A synthetic git repository holding a one-file Python greeter (greeter.py, one unittest, make check, an AGENTS.md) and a handoff/state.json registry with one agent lane, in one commit; the working tree then holds an uncommitted --shout flag in greeter.py, with no test and no README mention. No HANDOFF.md or HANDOFF.log.md existed. No remote.",
+      "date": "2026-10-08",
+      "published": true,
+      "transcript": {
+        "path": "evidence/transcripts/2026-10-08-claude-code-invocation.txt",
+        "sha256": "43f0eb99e55b067748bf8545ce3d003f50d986060bb96eafd404e78fee118a37"
+      },
+      "raw_output_sha256": "d24c971bcc9f4f33bf408480005706d09156c3fc08462ef0d7026222cdcaa909",
+      "renderer": "scripts/render_invocation.py",
+      "transforms": [
+        {
+          "name": "replace-isolation-root",
+          "what": "The absolute path of the fresh temporary directory that held only the plugin clone and the fixture was replaced with /iso, before every other transform, so the plugin directory appears as /iso/plugin and the fixture as /iso/fixture."
+        },
+        {
+          "name": "replace-plugin-root",
+          "what": "The --plugin-dir path would be replaced with /plugin; every occurrence had already become /iso/plugin."
+        },
+        {
+          "name": "replace-capture-root",
+          "what": "The fixture's absolute path would be replaced with /work; every occurrence had already become /iso/fixture."
+        },
+        {
+          "name": "replace-scratch-root",
+          "what": "A client scratch directory prefix /private/tmp/claude-<uid>/<slug> would be replaced with /scratch; the raw output contained none in a tool call, prompt or final message."
+        },
+        {
+          "name": "replace-home",
+          "what": "The home directory would be replaced with ~; it occurred in no tool call, prompt or final message."
+        },
+        {
+          "name": "replace-hostname",
+          "what": "The recording machine's hostname would be replaced with host; it occurred in no tool call, prompt or final message."
+        }
+      ],
+      "invoked_the_skill": true,
+      "outcome": "Loaded the skill (Skill handoff:handoff), read AGENTS.md and the registry, ran the collector once (exit status not in the stream; reported ok), ran make check, and wrote HANDOFF.md and HANDOFF.log.md (one entry); it left handoff/state.json unchanged, saying the lane was already correct, and committed nothing.",
+      "rendering": "Besides the transforms, scripts/render_invocation.py cuts every tool-call argument string longer than 300 characters and marks the cut as ...[N more characters]; the transforms run on each whole string before it is cut. It writes only each call's name, arguments and status, not tool output."
+    },
+    {
+      "product": "Codex",
+      "version": "0.146.0",
+      "model": "gpt-5.6-sol",
+      "model_source": "Codex's local session log for this thread; the --json output does not name the model.",
+      "skill_source": "skills/handoff/ of this repository at tag v0.1.0, copied into the fixture's .agents/skills/handoff/ and committed there",
+      "invocation": "$handoff",
+      "prompt": "Use $handoff to write a handoff checkpoint for this repository. Task note: I was adding a --shout flag to greeter.py that prints the greeting in upper case. The flag is parsed and applied but has no test yet, and README.md does not mention it. Next I plan to add the test, then document the flag. Stay inside this directory.",
+      "fixture": "A synthetic git repository holding a one-file Python greeter (greeter.py, one unittest, make check, an AGENTS.md) and a handoff/state.json registry with one agent lane, in one commit; the working tree then holds an uncommitted --shout flag in greeter.py, with no test and no README mention. No HANDOFF.md or HANDOFF.log.md existed. No remote. The vendored skill is a second commit.",
+      "date": "2026-10-08",
+      "published": true,
+      "transcript": {
+        "path": "evidence/transcripts/2026-10-08-codex-invocation.txt",
+        "sha256": "fc03f44f564f1be5bd56311c40a00138dd0b1268260c21063280828aa4c1d756"
+      },
+      "raw_output_sha256": "0f51a818e508783704d79e971df2baa0ff3ab177393ff2ac46c998a650e42e7c",
+      "renderer": "scripts/render_invocation.py",
+      "transforms": [
+        {
+          "name": "replace-plugin-root",
+          "what": "The absolute path of the fixture's .agents/skills/handoff, from which Codex loaded the skill, would be replaced with /plugin; Codex named it only by the relative path .agents/skills/handoff."
+        },
+        {
+          "name": "replace-capture-root",
+          "what": "The fixture's absolute path was replaced with /work."
+        },
+        {
+          "name": "replace-scratch-root",
+          "what": "A client scratch directory prefix /private/tmp/claude-<uid>/<slug> would be replaced with /scratch; the raw output contained none."
+        },
+        {
+          "name": "replace-home",
+          "what": "The home directory would be replaced with ~; once the fixture path was replaced, none remained."
+        },
+        {
+          "name": "replace-hostname",
+          "what": "The recording machine's hostname would be replaced with host; the raw output contained none."
+        }
+      ],
+      "invoked_the_skill": true,
+      "outcome": "Read .agents/skills/handoff/SKILL.md and its three references, ran the collector with --json (exit 0) and make check (exit 0), and wrote HANDOFF.md and HANDOFF.log.md; it left handoff/state.json unchanged and committed nothing.",
+      "rendering": "Besides the transforms, scripts/render_invocation.py cuts every tool-call argument string longer than 300 characters and marks the cut as ...[N more characters]; the transforms run on each whole string before it is cut. It writes only each call's name, arguments and status, not tool output."
+    },
+    {
+      "product": "Claude Code",
+      "version": "2.1.220",
+      "model": "claude-sonnet-5",
+      "skill_source": "--plugin-dir pointing at a local clone of tag v0.1.0 that had sibling checkouts of other repositories beside it",
+      "invocation": "/handoff",
+      "prompt": "Use /handoff to write a handoff checkpoint for this repository. Task note: I was adding a --shout flag to greeter.py that prints the greeting in upper case. The flag is parsed and applied but has no test yet, and README.md does not mention it. Next I plan to add the test, then document the flag. Stay inside this directory.",
+      "fixture": "A synthetic git repository holding a one-file Python greeter (greeter.py, one unittest, make check, an AGENTS.md) and a handoff/state.json registry with one agent lane, in one commit; the working tree then holds an uncommitted --shout flag in greeter.py, with no test and no README mention. No HANDOFF.md or HANDOFF.log.md existed. No remote.",
+      "date": "2026-10-08",
+      "published": false,
+      "published_note": "Its tool calls touched a path outside the fixture, the plugin directory and the client scratch directory, so it was re-run in isolation; no transcript is committed.",
+      "raw_output_sha256": "b37e40e5e417fbb642b61792210c7732603b793bbb5ee7c11171b7adb5643368",
+      "invoked_the_skill": true,
+      "outcome": "Loaded the skill, listed the top level of / (find / -maxdepth 1 -name .claude) although the prompt said to stay inside the fixture, ran the collector twice and make check, and wrote HANDOFF.md and HANDOFF.log.md; it left handoff/state.json unchanged and committed nothing."
+    }
+  ]
 }

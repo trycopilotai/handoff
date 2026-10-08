@@ -1,0 +1,46 @@
+client: Claude Code 2.1.220
+model: claude-sonnet-5
+
+## prompt
+
+Use /handoff to write a handoff checkpoint for this repository. Task note: I was adding a --shout flag to greeter.py that prints the greeting in upper case. The flag is parsed and applied but has no test yet, and README.md does not mention it. Next I plan to add the test, then document the flag. Stay inside this directory.
+
+## tool calls
+
+1. Skill {"args": "write checkpoint for greeter.py --shout flag work. Task note: Adding a --shout flag to greeter.py that prints the greeting in upper case. The flag is parsed and applied but has no test yet, and README.md does not mention it. Next: add the test, then document the flag. Stay inside this directory.", "skill": "handoff:handoff"}
+  status: ok
+2. Bash {"command": "ls -la", "description": "List repo root files"}
+  status: ok
+3. Read {"file_path": "/iso/fixture/AGENTS.md"}
+  status: ok
+4. Read {"file_path": "/iso/fixture/README.md"}
+  status: ok
+5. Read {"file_path": "/iso/fixture/greeter.py"}
+  status: ok
+6. Bash {"command": "ls -la handoff tests; echo ---; cat handoff/state.json 2>/dev/null; echo ---; find handoff -maxdepth 3", "description": "Inspect handoff and tests directories"}
+  status: ok
+7. Read {"file_path": "/iso/fixture/tests/test_greeter.py"}
+  status: ok
+8. Bash {"command": "python3 /iso/plugin/skills/handoff/scripts/collect_handoff_state.py --repo /iso/fixture", "description": "Run handoff state collector"}
+  status: ok
+9. Read {"file_path": "/iso/plugin/skills/handoff/references/snapshot-template.md"}
+  status: ok
+10. Read {"file_path": "/iso/plugin/skills/handoff/references/log-entry-template.md"}
+  status: ok
+11. Read {"file_path": "/iso/plugin/skills/handoff/references/update-protocol.md"}
+  status: ok
+12. Bash {"command": "cat Makefile && echo --- && make check", "description": "Check Makefile and run make check"}
+  status: ok
+13. Write {"content": "---\nname: Repository Handoff\nlast_updated: 2026-10-08T18:06:34Z\nstatus: active\nactive_objective: Add a --shout flag to greeter.py that uppercases the greeting\nresume_here: Add a unittest for --shout in tests/test_greeter.py, then document the flag in README.md\nhandoff_log: HANDOFF.log.md\n---\n\n# Repo...[3326 more characters]", "file_path": "/iso/fixture/HANDOFF.md"}
+  status: ok
+14. Write {"content": "# Handoff Log\n\n## 2026-10-08 18:06 UTC - checkpoint --shout flag in progress\n\n- **Trigger:** Explicit `/handoff` checkpoint request.\n- **Phase:** edit (mid-task).\n- **Objective:** Add a `--shout` flag to `greeter.py` that\n  prints the greeting in upper case.\n- **State change:** `--shout` added to th...[541 more characters]", "file_path": "/iso/fixture/HANDOFF.log.md"}
+  status: ok
+
+## final message
+
+Checkpoint written. `handoff/state.json` already had the correct `cli` lane owning `greeter.py`/`tests/`, so no registry change was needed.
+
+- **HANDOFF.md** (new): active objective, resume point (add `--shout` test → document in README → re-run `make check`), dirty-state and ownership notes, and the `make check` result (1 test, OK — doesn't cover `--shout` yet).
+- **HANDOFF.log.md** (new): one entry recording this mid-task checkpoint.
+
+Next: add the `--shout` test, then update README.md, per the plan already recorded.

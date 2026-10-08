@@ -33,15 +33,19 @@ whole report.
 
 **Not measured, stated up front.**
 
-- No agent invoked the skill to produce the evidence here.
-  The transcript shows only the collector, run from a shell
-  on a synthetic repository.
+- No agent produced the demo or the collector transcript.
+  They show only the collector, run from a shell on a
+  synthetic repository.
 - Whether a snapshot that an agent writes by following
   `SKILL.md` lets a different agent resume the work has not
   been measured.
 - Whether an agent appends a log entry only on a state
   transition, and not at the end of every turn, has not been
   measured.
+- The agent invocations under Evidence loaded the skill
+  from a plugin directory (Claude Code) and from a
+  repository's `.agents/skills/` (Codex), not through the
+  install blocks below.
 
 ## What is in it
 
@@ -133,7 +137,7 @@ fails.
 
 ```sh
 set -eu
-release=v0.1.0
+release=v0.1.1
 install_target="$HOME/.claude/skills/handoff"
 install_parent="$(dirname "$install_target")"
 mkdir -p "$install_parent"
@@ -170,7 +174,7 @@ the block above is `install_target`.
 
 ```sh
 set -eu
-release=v0.1.0
+release=v0.1.1
 install_target="$HOME/.agents/skills/handoff"
 install_parent="$(dirname "$install_target")"
 mkdir -p "$install_parent"
@@ -204,8 +208,8 @@ Each block works in a temporary `.handoff.*` directory
 beside the target and removes it on exit. An existing
 install directory at the target is replaced.
 
-Each block was run twice against this repository's tag,
-cloned from a local `file://` URL with git 2.50.1, not from
+Each block was run twice against this repository's v0.1.0
+tag, cloned from a local `file://` URL with git 2.50.1, not from
 GitHub. Each time the clone printed a warning that
 `refs/tags/v0.1.0` "is not a commit" and a detached `HEAD`
 note, still checked out the tagged commit, and the install
@@ -253,6 +257,43 @@ with the transcript.
 `make check` runs the collector's own tests and a packaging
 contract that ties this file, both plugin manifests, the
 example, the transcript and the demo images to each other.
+
+### Agent invocations
+
+Each client was started on one synthetic fixture with the
+v0.1.0 skill text: a small Python repository in one commit,
+with a `handoff/state.json` registry of one agent lane and an
+uncommitted `--shout` flag in `greeter.py`, and a task note in
+the prompt. This is one run per client, not a benchmark.
+
+- [`evidence/transcripts/2026-10-08-claude-code-invocation.txt`](evidence/transcripts/2026-10-08-claude-code-invocation.txt):
+  Claude Code 2.1.220, invoked with `/handoff`. It loaded the
+  skill, ran the collector and `make check`, and wrote
+  `HANDOFF.md` and `HANDOFF.log.md` with one entry. It left
+  `handoff/state.json` unchanged and committed nothing.
+- [`evidence/transcripts/2026-10-08-codex-invocation.txt`](evidence/transcripts/2026-10-08-codex-invocation.txt):
+  Codex 0.146.0, invoked with `$handoff`. It read `SKILL.md`
+  and its references, ran the collector with `--json` and
+  `make check`, and wrote the same two files. It left the
+  registry unchanged and committed nothing.
+
+Neither run shows whether another agent can resume from the
+snapshot. A first Claude Code run, beside other checkouts,
+listed the top level of `/` although the prompt said to stay
+inside the fixture, so it was re-run in a fresh temporary
+directory; the manifest records it with `"published": false`.
+
+`scripts/render_invocation.py` wrote both transcripts from
+the clients' raw output, which is not committed. It keeps
+each tool call's name, arguments and status, not the tool's
+output, and cuts any argument string longer than 300
+characters, marking the cut `...[N more characters]`. Its
+only other edits are the ones `evidence/demo-manifest.json`
+declares for each invocation: `replace-isolation-root`,
+`replace-plugin-root`, `replace-capture-root`,
+`replace-scratch-root`, `replace-home` and
+`replace-hostname`. The manifest also records each model,
+prompt and outcome and both files' SHA-256.
 
 **Known limits.** The report holds absolute paths, branch
 names, commit subjects and the registry fields it reads,
