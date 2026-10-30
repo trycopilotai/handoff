@@ -31,5 +31,6 @@ jobs:
 
       # No install step on purpose. Both suites use the
       # standard library only.
-      - name: Run the collector tests and the packaging contract
+      - name:
+          Run the collector tests and the packaging contract
         run: make check

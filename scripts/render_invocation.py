@@ -53,7 +53,9 @@ def transforms(options):
     steps.append(prefix(options.root, "/work"))
     steps.append(lambda text: SCRATCH.sub(lambda match: "/scratch", text))
     steps.append(prefix(options.home, "~"))
-    steps += [hostname(name) for name in sorted(options.hostname, key=len, reverse=True)]
+    steps += [
+        hostname(name) for name in sorted(options.hostname, key=len, reverse=True)
+    ]
 
     def apply(text: str) -> str:
         for step in steps:
@@ -111,7 +113,11 @@ def codex(events, arguments):
         if item.get("type") == "command_execution":
             lines.append(
                 "command_execution %s\n  status: %s, exit %s"
-                % (arguments({"command": item["command"]}), item.get("status"), item.get("exit_code"))
+                % (
+                    arguments({"command": item["command"]}),
+                    item.get("status"),
+                    item.get("exit_code"),
+                )
             )
         elif item.get("type") == "agent_message":
             final = item["text"]
@@ -146,7 +152,13 @@ def main(argv=None) -> int:
         header
         + ["", "## prompt", "", apply(prompt), "", "## tool calls", ""]
         + ["%d. %s" % (number, line) for number, line in enumerate(lines, 1)]
-        + ["", "## final message", "", apply(final) if final is not None else "(none)", ""]
+        + [
+            "",
+            "## final message",
+            "",
+            apply(final) if final is not None else "(none)",
+            "",
+        ]
     )
     sys.stdout.write(text)
     return 0
