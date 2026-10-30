@@ -6,12 +6,18 @@ snapshot of the current state, a `HANDOFF.log.md` that
 entries are appended to (earlier ones change only for typo
 fixes or corrections the user asks for), and, when several
 agents share the work, a `handoff/state.json` registry of
-who owns what. It ships one small program, a collector that
-reports the repository's git state and that registry.
+who owns what.
+
+---
 
 [![auto-lint-pr](https://github.com/trycopilotai/handoff/actions/workflows/auto-lint-pr.yml/badge.svg)](https://github.com/trycopilotai/handoff/actions/workflows/auto-lint-pr.yml)
 [![check](https://github.com/trycopilotai/handoff/actions/workflows/check.yml/badge.svg)](https://github.com/trycopilotai/handoff/actions/workflows/check.yml)
 [![lint](https://github.com/trycopilotai/handoff/actions/workflows/lint.yml/badge.svg)](https://github.com/trycopilotai/handoff/actions/workflows/lint.yml)
+
+---
+
+It ships one small program, a collector that reports the
+repository's git state and that registry.
 
 The collector prints one table row per agent in state.json.
 
