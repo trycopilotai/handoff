@@ -113,7 +113,9 @@ def build_repository(repository: Path, base: Path) -> None:
     greeter = repository / "greeter.py"
     final = greeter.read_text(encoding="utf-8")
     if final.count(UNCOMMITTED) != 1:
-        raise SystemExit("examples/synthetic-repo/greeter.py changed; update UNCOMMITTED")
+        raise SystemExit(
+            "examples/synthetic-repo/greeter.py changed; update UNCOMMITTED"
+        )
     greeter.write_text(final.replace(UNCOMMITTED, ""), encoding="utf-8")
 
     def git(*arguments: str, extra: dict | None = None) -> None:

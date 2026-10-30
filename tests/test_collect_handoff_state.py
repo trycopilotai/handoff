@@ -144,8 +144,13 @@ class CollectorTest(unittest.TestCase):
         self.assertTrue(state["present"])
         self.assertEqual(state["path"], "handoff/state.json")
         self.assertEqual(state["schema_version"], 1)
-        self.assertEqual(state["agents"][0]["owned_scopes"], [{"name": "cli", "paths": ["greeter.py"]}])
-        self.assertEqual(state["agents"][1]["owned_scopes"], [{"name": "docs", "paths": []}])
+        self.assertEqual(
+            state["agents"][0]["owned_scopes"],
+            [{"name": "cli", "paths": ["greeter.py"]}],
+        )
+        self.assertEqual(
+            state["agents"][1]["owned_scopes"], [{"name": "docs", "paths": []}]
+        )
         self.assertEqual(state["agents"][1]["owner"], "")
 
     def test_missing_registry_is_reported_not_an_error(self) -> None:
@@ -167,12 +172,21 @@ class CollectorTest(unittest.TestCase):
         outside.write_text(json.dumps(AGENTS), encoding="utf-8")
         (self.repo.path / "link.json").symlink_to(outside)
         (self.repo.path / "loop.json").symlink_to(self.repo.path / "loop.json")
-        values = (str(outside), "../outside.json", "handoff/../../outside.json", "link.json", "loop.json")
+        values = (
+            str(outside),
+            "../outside.json",
+            "handoff/../../outside.json",
+            "link.json",
+            "loop.json",
+        )
         for value in values:
             result = self.repo.collect("--state-file", value)
             self.assertEqual(result.returncode, 2, value)
             self.assertEqual(result.stdout, "", value)
-            self.assertIn("--state-file must be a relative path that resolves inside", result.stderr)
+            self.assertIn(
+                "--state-file must be a relative path that resolves inside",
+                result.stderr,
+            )
             self.assertNotIn("Traceback", result.stderr, value)
 
     def test_repo_is_checked_before_the_state_file(self) -> None:
@@ -197,7 +211,9 @@ class CollectorTest(unittest.TestCase):
         result = self.repo.collect("--json", repo=str(self.repo.path / "deep" / "er"))
         self.assertEqual(json.loads(result.stdout)["repo"], str(self.repo.path))
 
-    def test_unparsable_or_misshapen_registries_are_reported_in_the_output(self) -> None:
+    def test_unparsable_or_misshapen_registries_are_reported_in_the_output(
+        self,
+    ) -> None:
         cases = {
             "{not json": None,
             "[]": "the top level is not a JSON object",
@@ -210,7 +226,9 @@ class CollectorTest(unittest.TestCase):
             result = self.repo.collect()
             self.assertEqual(result.returncode, 0, text)
             self.assertNotIn("Traceback", result.stderr, text)
-            self.assertIn("`handoff/state.json` could not be parsed: ", result.stdout, text)
+            self.assertIn(
+                "`handoff/state.json` could not be parsed: ", result.stdout, text
+            )
             state = self.repo.report()["handoff_state"]
             self.assertEqual(state["agents"], [], text)
             if message is not None:
@@ -223,11 +241,31 @@ class CollectorTest(unittest.TestCase):
         parent = self.repo.git("rev-parse", "HEAD").strip()
         person = b"Example <test@example.com> 1700000000 +0000"
         body = b"tree %s\nparent %s\nauthor %s\ncommitter %s\n\nSubject \xff\xfe\n" % (
-            tree.encode(), parent.encode(), person, person)
-        commit = subprocess.run(
-            ["git", "-C", str(self.repo.path), "hash-object", "-t", "commit", "-w", "--stdin"],
-            input=body, env=self.repo.environment, capture_output=True, check=True,
-        ).stdout.decode().strip()
+            tree.encode(),
+            parent.encode(),
+            person,
+            person,
+        )
+        commit = (
+            subprocess.run(
+                [
+                    "git",
+                    "-C",
+                    str(self.repo.path),
+                    "hash-object",
+                    "-t",
+                    "commit",
+                    "-w",
+                    "--stdin",
+                ],
+                input=body,
+                env=self.repo.environment,
+                capture_output=True,
+                check=True,
+            )
+            .stdout.decode()
+            .strip()
+        )
         self.repo.git("update-ref", "HEAD", commit)
         result = self.repo.collect()
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -237,13 +275,30 @@ class CollectorTest(unittest.TestCase):
         library = self.repo.base / "library"
         library.mkdir()
         self.repo.git("init", "--quiet", "-b", "main", cwd=library)
-        self.repo.git("commit", "--quiet", "--no-gpg-sign", "--allow-empty", "-m", "L", cwd=library)
-        self.repo.git("-c", "protocol.file.allow=always", "submodule", "add", "--quiet",
-                      str(library), "lib dir")
+        self.repo.git(
+            "commit",
+            "--quiet",
+            "--no-gpg-sign",
+            "--allow-empty",
+            "-m",
+            "L",
+            cwd=library,
+        )
+        self.repo.git(
+            "-c",
+            "protocol.file.allow=always",
+            "submodule",
+            "add",
+            "--quiet",
+            str(library),
+            "lib dir",
+        )
         self.repo.git("commit", "--quiet", "--no-gpg-sign", "-m", "Add lib dir")
         (self.repo.path / "lib dir" / "inside.txt").write_text("x\n", encoding="utf-8")
         clone = self.repo.base / "clone"
-        self.repo.git("clone", "--quiet", str(self.repo.path), str(clone), cwd=self.repo.base)
+        self.repo.git(
+            "clone", "--quiet", str(self.repo.path), str(clone), cwd=self.repo.base
+        )
         (clone / "parent-only.txt").write_text("x\n", encoding="utf-8")
 
         checked_out = self.repo.report()["submodule_details"]
@@ -253,21 +308,40 @@ class CollectorTest(unittest.TestCase):
 
         result = self.repo.collect("--json", repo=str(clone))
         details = json.loads(result.stdout)["submodule_details"]
-        self.assertEqual(details, [{"path": "lib dir", "exists": True, "checked_out": False, "status": []}])
+        self.assertEqual(
+            details,
+            [{"path": "lib dir", "exists": True, "checked_out": False, "status": []}],
+        )
         markdown = self.repo.collect(repo=str(clone)).stdout
         self.assertIn("### lib dir\nnot checked out\n", markdown)
-        self.assertNotIn("parent-only.txt", markdown.split("## Nested Submodule Status", 1)[1])
+        self.assertNotIn(
+            "parent-only.txt", markdown.split("## Nested Submodule Status", 1)[1]
+        )
 
     def test_null_values_render_empty_in_every_cell(self) -> None:
-        state = {"agents": [{"agent_id": "x", "owner": None, "model": None, "surface": None,
-                             "chat_uuid": None, "status": None, "detail_path": None,
-                             "updated_at": None, "owned_scopes": [{"name": None}, {"name": "b"}]}]}
+        state = {
+            "agents": [
+                {
+                    "agent_id": "x",
+                    "owner": None,
+                    "model": None,
+                    "surface": None,
+                    "chat_uuid": None,
+                    "status": None,
+                    "detail_path": None,
+                    "updated_at": None,
+                    "owned_scopes": [{"name": None}, {"name": "b"}],
+                }
+            ]
+        }
         self.repo.write("handoff/state.json", json.dumps(state))
         result = self.repo.collect()
         self.assertEqual(result.returncode, 0, result.stderr)
         rows = self.table_rows(result.stdout)
         self.assertEqual(rows[1:], ["| x | / |  |  |  | , b |  |"])
-        self.assertNotIn("None", result.stdout.split("## Agent Ownership Summary", 1)[1])
+        self.assertNotIn(
+            "None", result.stdout.split("## Agent Ownership Summary", 1)[1]
+        )
 
     def test_agent_id_replaces_only_a_missing_null_or_empty_owner(self) -> None:
         agents = [
@@ -279,8 +353,10 @@ class CollectorTest(unittest.TestCase):
         ]
         self.repo.write("handoff/state.json", json.dumps({"agents": agents}))
         rows = self.table_rows(self.repo.collect().stdout)[1:]
-        self.assertEqual([row.split(" | ")[0] for row in rows],
-                         ["| missing", "| null", "| empty", "| 0", "| false"])
+        self.assertEqual(
+            [row.split(" | ")[0] for row in rows],
+            ["| missing", "| null", "| empty", "| 0", "| false"],
+        )
 
     def test_backslashes_are_escaped_before_pipes(self) -> None:
         state = {"agents": [{"owner": "a\\|b", "status": "c\\d"}]}
@@ -293,7 +369,9 @@ class CollectorTest(unittest.TestCase):
         result = self.repo.collect()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertNotIn("Traceback", result.stderr)
-        self.assertEqual(self.table_rows(result.stdout)[1:], ["| a?b | / |  |  |  |  |  |"])
+        self.assertEqual(
+            self.table_rows(result.stdout)[1:], ["| a?b | / |  |  |  |  |  |"]
+        )
 
     def test_a_parent_that_is_a_file_reports_the_registry_missing(self) -> None:
         self.repo.write("handoff", "a script, not a directory\n")
@@ -305,8 +383,13 @@ class CollectorTest(unittest.TestCase):
     def test_table_cells_stay_on_one_line_with_pipes_escaped(self) -> None:
         state = {
             "agents": [
-                {"owner": "a|b", "status": 3, "chat_uuid": "two\nlines", "detail_path": None,
-                 "owned_scopes": [{"name": 7}, {"name": "x|y"}]}
+                {
+                    "owner": "a|b",
+                    "status": 3,
+                    "chat_uuid": "two\nlines",
+                    "detail_path": None,
+                    "owned_scopes": [{"name": 7}, {"name": "x|y"}],
+                }
             ]
         }
         self.repo.write("handoff/state.json", json.dumps(state))

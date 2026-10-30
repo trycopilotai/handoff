@@ -23,10 +23,10 @@ private channel.
   them that makes an agent copy secrets into a handoff file,
   discard dirty work the user did not ask to discard, or
   treat repository content other than the instruction files
-  the workflow names (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`
-  or local equivalents) as instructions, such as text inside
-  a handoff file, a registry value or the collector's
-  report, is a valid report.
+  the workflow names (`AGENTS.md`, `CLAUDE.md`,
+  `.cursorrules` or local equivalents) as instructions, such
+  as text inside a handoff file, a registry value or the
+  collector's report, is a valid report.
 - **The collector.**
   `skills/handoff/scripts/collect_handoff_state.py` writes
   no file itself. It runs `git rev-parse`, `git rev-list`,
@@ -53,17 +53,17 @@ private channel.
   Chromium binary from a fixed candidate list, runs it
   headless with a temporary profile directory, and writes
   the preview PNG and its stamp. `scripts/generate_demo.py`
-  writes two SVG files; `scripts/verify_demo.py` only
-  reads. `scripts/record_session.py` copies `skills/` and
+  writes two SVG files; `scripts/verify_demo.py` only reads.
+  `scripts/record_session.py` copies `skills/` and
   `examples/synthetic-repo/` into a temporary directory,
   makes two commits there, runs the collector through
   `bash`, and rewrites the transcript and the manifest; with
   `RECORD_RAW_DIR` set it also writes two files into that
-  directory. `scripts/render_invocation.py` reads a
-  client's raw JSON-lines output and a prompt file, writes a
+  directory. `scripts/render_invocation.py` reads a client's
+  raw JSON-lines output and a prompt file, writes a
   transcript to standard output, and runs no other program.
-  `tests/test_collect_handoff_state.py` builds
-  git repositories in temporary directories and runs the
+  `tests/test_collect_handoff_state.py` builds git
+  repositories in temporary directories and runs the
   collector against them. `tests/test_integrations.py` runs
   `git` against the repository root and rebuilds the
   synthetic repository in a temporary directory.
@@ -98,12 +98,11 @@ private channel.
   in whitespace, or contains ` (` and ends in `)` is
   misread, and that submodule is then reported as missing or
   under the wrong path.
-- The `--state-file` check resolves the path before the
-  file is read. A process that swaps a link in between can
-  change what it reads. A `--state-file` that names a FIFO
-  or another special file inside the root is opened like a
-  regular file, so the collector can wait on it without
-  end.
+- The `--state-file` check resolves the path before the file
+  is read. A process that swaps a link in between can change
+  what it reads. A `--state-file` that names a FIFO or
+  another special file inside the root is opened like a
+  regular file, so the collector can wait on it without end.
 - The collector runs whichever `git` is first on `PATH`, and
   git reads the repository's own configuration. That
   configuration can name programs git runs during

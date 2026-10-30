@@ -34,8 +34,7 @@ fail on an innocent-looking prose edit:
   `examples/synthetic-repo/` (except `.DS_Store` and
   `__pycache__` files) and of the transcript, so any edit to
   one of those, prose included, fails until the manifest is
-  refreshed as
-  described next.
+  refreshed as described next.
 
 If you change one of those, change the thing it describes
 too.
@@ -67,10 +66,11 @@ To check the recorded session, run `make record` in a fresh
 clone and `git diff`. With the program and the example
 unchanged, and git 2.50.1 as when it was recorded, the
 transcript differs only in its `Generated UTC` line; another
-git version may word git's own lines differently. In the manifest the transcript's
-SHA-256 differs, `date` differs on a different UTC day, and
-`interpreter` differs under a different Python version. The
-commit ids are fixed by the recorder's author and dates.
+git version may word git's own lines differently. In the
+manifest the transcript's SHA-256 differs, `date` differs on
+a different UTC day, and `interpreter` differs under a
+different Python version. The commit ids are fixed by the
+recorder's author and dates.
 
 ## What is most useful
 
@@ -91,8 +91,7 @@ ready to pick up.
 
 Prose changes to `SKILL.md` and the files under
 `references/` are welcome. Say what an agent wrote before
-the change and what it writes after, on the same
-repository.
+the change and what it writes after, on the same repository.
 
 Keep `SKILL.md` under 500 lines; the suite enforces it.
 Frontmatter carries `name` and `description` and nothing

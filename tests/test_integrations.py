@@ -47,7 +47,12 @@ CLAUDE_CODE_TRANSFORMS = [
 CODEX_TRANSFORMS = CLAUDE_CODE_TRANSFORMS[1:]
 CLAIM = "The collector prints one table row per agent in state.json."
 REPOSITORY = "https://github.com/trycopilotai/" + NAME
-DEFAULT_PATHS = ("HANDOFF.md", "HANDOFF.log.md", "handoff/state.json", "handoff/agents/")
+DEFAULT_PATHS = (
+    "HANDOFF.md",
+    "HANDOFF.log.md",
+    "handoff/state.json",
+    "handoff/agents/",
+)
 
 
 def read(path: Path) -> str:
@@ -217,9 +222,13 @@ class SkillTest(unittest.TestCase):
         documents = [SKILL, *sorted((PACKAGE / "references").glob("*.md"))]
         calls = []
         for document in documents:
-            for call in re.findall(r"python3 (\S*scripts/collect_handoff_state\.py)", read(document)):
+            for call in re.findall(
+                r"python3 (\S*scripts/collect_handoff_state\.py)", read(document)
+            ):
                 calls.append(call)
-                self.assertEqual(call.split("scripts/")[0], "<skill-dir>/", document.name)
+                self.assertEqual(
+                    call.split("scripts/")[0], "<skill-dir>/", document.name
+                )
         self.assertGreaterEqual(len(calls), 3)
         self.assertIn("`<skill-dir>`", read(SKILL))
 
@@ -235,9 +244,15 @@ class SkillTest(unittest.TestCase):
     def test_documented_exit_statuses_match_the_collector(self) -> None:
         for document in (SKILL, README):
             text = flat(document)
-            self.assertIn("exits 0 after printing the report, 1 when `--repo` is not inside a git working tree, and 2 on a usage error", text)
+            self.assertIn(
+                "exits 0 after printing the report, 1 when `--repo` is not inside a git working tree, and 2 on a usage error",
+                text,
+            )
         self.assertEqual(exit_status_after("collect --repo demo-repo --recent 2"), 0)
-        self.assertEqual(exit_status_after("collect --repo demo-repo --state-file ../outside.json"), 2)
+        self.assertEqual(
+            exit_status_after("collect --repo demo-repo --state-file ../outside.json"),
+            2,
+        )
         self.assertEqual(exit_status_after("collect --repo not-a-repo"), 1)
 
 
@@ -298,7 +313,10 @@ class ReadmeTest(unittest.TestCase):
         output = transcript_steps()["collect --repo demo-repo --recent 2"]
         section = output[output.index("## Agent Ownership Summary") :]
         rows = [line for line in section if line.startswith("| ")]
-        self.assertEqual(rows[0], "| Agent | Model / Surface | Session | Status | Detail | Scopes | Updated |")
+        self.assertEqual(
+            rows[0],
+            "| Agent | Model / Surface | Session | Status | Detail | Scopes | Updated |",
+        )
         self.assertEqual(len(rows[2:]), len(agents))
         self.assertGreaterEqual(len(agents), 2)
         for row, agent in zip(rows[2:], agents):
@@ -354,9 +372,13 @@ class EvidenceTest(unittest.TestCase):
         recorder = load(ROOT / "scripts" / "record_session.py", "record_session")
         self.assertEqual(record["skill"]["sha256"], sha256(SKILL))
         programs = {item["path"]: item["sha256"] for item in record["programs"]}
-        self.assertEqual(programs, {str(COLLECTOR.relative_to(ROOT)): sha256(COLLECTOR)})
+        self.assertEqual(
+            programs, {str(COLLECTOR.relative_to(ROOT)): sha256(COLLECTOR)}
+        )
         self.assertEqual(record["example"]["path"], str(EXAMPLE.relative_to(ROOT)))
-        self.assertEqual(record["example"]["tree_sha256"], recorder.tree_sha256(EXAMPLE))
+        self.assertEqual(
+            record["example"]["tree_sha256"], recorder.tree_sha256(EXAMPLE)
+        )
         self.assertEqual(record["output"]["sha256"], sha256(TRANSCRIPT))
         self.assertIs(record["output"]["edited"], True)
         self.assertIs(record["agent"]["invoked_the_skill"], False)
@@ -427,7 +449,9 @@ class ReproductionTest(unittest.TestCase):
 
 class ExampleTest(unittest.TestCase):
     def test_example_says_it_is_synthetic(self) -> None:
-        self.assertIn("This is synthetic example material.", read(ROOT / "examples" / "README.md"))
+        self.assertIn(
+            "This is synthetic example material.", read(ROOT / "examples" / "README.md")
+        )
 
     def test_example_uses_the_default_paths(self) -> None:
         for path in DEFAULT_PATHS:
@@ -448,7 +472,9 @@ class ExampleTest(unittest.TestCase):
         fields = re.findall(r"^- \*\*([^*]+):\*\*", template, flags=re.M)
         log = read(EXAMPLE / "HANDOFF.log.md")
         for entry in log.split("\n## ")[1:]:
-            self.assertEqual(re.findall(r"^- \*\*([^*]+):\*\*", entry, flags=re.M), fields)
+            self.assertEqual(
+                re.findall(r"^- \*\*([^*]+):\*\*", entry, flags=re.M), fields
+            )
 
 
 class DemoTest(unittest.TestCase):
@@ -485,7 +511,9 @@ class SocialPreviewTest(unittest.TestCase):
 class SupportFilesTest(unittest.TestCase):
     def test_security_scope_names_every_build_script(self) -> None:
         text = read(ROOT / "SECURITY.md")
-        for path in sorted((ROOT / "scripts").glob("*.py")) + [ROOT / "assets" / "build.py"]:
+        for path in sorted((ROOT / "scripts").glob("*.py")) + [
+            ROOT / "assets" / "build.py"
+        ]:
             self.assertIn("`%s`" % path.relative_to(ROOT), text)
 
     def test_license_is_mit(self) -> None:
@@ -543,7 +571,10 @@ class InvocationEvidenceTest(unittest.TestCase):
             self.assertTrue(path.name.startswith(entry["date"] + "-"))
 
     def test_transcripts_show_the_skill_being_loaded(self) -> None:
-        by_product = {e["product"]: read(ROOT / e["transcript"]["path"]) for e in self.invocations()}
+        by_product = {
+            e["product"]: read(ROOT / e["transcript"]["path"])
+            for e in self.invocations()
+        }
         self.assertIn('1. Skill {"args":', by_product["Claude Code"])
         self.assertIn('"skill": "handoff:handoff"}', by_product["Claude Code"])
         self.assertIn(".agents/skills/handoff/SKILL.md", by_product["Codex"])
@@ -557,19 +588,30 @@ class InvocationEvidenceTest(unittest.TestCase):
             # Spelled in pieces so that a search of this repository
             # for a machine path finds only real ones.
             users = "Use" + "rs"
-            leaks = ("/%s/" % users, "-%s-" % users, "/private/", "/var/folders", "/home/", "claude-5" + "01")
+            leaks = (
+                "/%s/" % users,
+                "-%s-" % users,
+                "/private/",
+                "/var/folders",
+                "/home/",
+                "claude-5" + "01",
+            )
             for leak in leaks:
                 self.assertNotIn(leak, text)
 
     def test_rendering_rule_is_declared_and_matches_the_renderer(self) -> None:
         renderer = load(RENDERER, "render_invocation")
         for entry in self.invocations():
-            self.assertIn("longer than %d characters" % renderer.LIMIT, entry["rendering"])
+            self.assertIn(
+                "longer than %d characters" % renderer.LIMIT, entry["rendering"]
+            )
             self.assertIn("...[N more characters]", entry["rendering"])
 
     def test_readme_links_both_transcripts_and_names_the_transforms(self) -> None:
         text = read(README)
-        section = text.split("### Agent invocations", 1)[1].split("**Known limits.**", 1)[0]
+        section = text.split("### Agent invocations", 1)[1].split(
+            "**Known limits.**", 1
+        )[0]
         for entry in self.invocations():
             self.assertIn("](%s)" % entry["transcript"]["path"], section)
         for name in CLAUDE_CODE_TRANSFORMS:
@@ -593,9 +635,23 @@ class RendererTest(unittest.TestCase):
                 "".join(json.dumps(event) + "\n" for event in events), encoding="utf-8"
             )
             result = subprocess.run(
-                [sys.executable, str(RENDERER), "--client", client, "--prompt", str(prompt),
-                 "--root", "/h/me/fix", "--home", "/h/me", *extra, str(stream)],
-                capture_output=True, text=True, check=True,
+                [
+                    sys.executable,
+                    str(RENDERER),
+                    "--client",
+                    client,
+                    "--prompt",
+                    str(prompt),
+                    "--root",
+                    "/h/me/fix",
+                    "--home",
+                    "/h/me",
+                    *extra,
+                    str(stream),
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
             )
         return result.stdout
 
@@ -609,7 +665,12 @@ class RendererTest(unittest.TestCase):
             for i in range(len(inputs))
         ]
         return [
-            {"type": "system", "subtype": "init", "model": "m1", "claude_code_version": "9.9"},
+            {
+                "type": "system",
+                "subtype": "init",
+                "model": "m1",
+                "claude_code_version": "9.9",
+            },
             {"type": "assistant", "message": {"content": uses}},
             {"type": "user", "message": {"content": results}},
             {"type": "result", "result": "Wrote /h/me/fix/HANDOFF.md on box.local."},
@@ -625,7 +686,12 @@ class RendererTest(unittest.TestCase):
                 {"file_path": "/private/tmp/claude-1000/-h-me-slug/tasks/a.out"},
                 {"file_path": "/h/me/other"},
             ),
-            "--plugin-root", "/h/me/plug", "--hostname", "box.local", "--hostname", "box",
+            "--plugin-root",
+            "/h/me/plug",
+            "--hostname",
+            "box.local",
+            "--hostname",
+            "box",
         )
         self.assertIn("client: Claude Code 9.9\nmodel: m1\n", text)
         self.assertIn("## prompt\n\nUse /handoff here.\n", text)
@@ -634,7 +700,9 @@ class RendererTest(unittest.TestCase):
         self.assertIn('"/plugin/skills/s/SKILL.md"', text)
         self.assertIn('"/scratch/tasks/a.out"', text)
         self.assertIn('"~/other"', text)
-        self.assertTrue(text.endswith("## final message\n\nWrote /work/HANDOFF.md on host.\n"))
+        self.assertTrue(
+            text.endswith("## final message\n\nWrote /work/HANDOFF.md on host.\n")
+        )
 
     def test_isolation_root_is_replaced_first(self) -> None:
         text = self.render(
@@ -643,7 +711,10 @@ class RendererTest(unittest.TestCase):
                 {"file_path": "/h/me/iso/plugin/skills/s/SKILL.md"},
                 {"file_path": "/h/me/iso/fixture/greeter.py"},
             ),
-            "--isolation-root", "/h/me/iso", "--plugin-root", "/h/me/iso/plugin",
+            "--isolation-root",
+            "/h/me/iso",
+            "--plugin-root",
+            "/h/me/iso/plugin",
         )
         self.assertIn('"/iso/plugin/skills/s/SKILL.md"', text)
         self.assertIn('"/iso/fixture/greeter.py"', text)
@@ -661,9 +732,19 @@ class RendererTest(unittest.TestCase):
         text = self.render(
             "codex",
             [
-                {"type": "item.completed", "item": {"type": "command_execution",
-                 "command": "cat " + long, "status": "completed", "exit_code": 0}},
-                {"type": "item.completed", "item": {"type": "agent_message", "text": "Done."}},
+                {
+                    "type": "item.completed",
+                    "item": {
+                        "type": "command_execution",
+                        "command": "cat " + long,
+                        "status": "completed",
+                        "exit_code": 0,
+                    },
+                },
+                {
+                    "type": "item.completed",
+                    "item": {"type": "agent_message", "text": "Done."},
+                },
             ],
         )
         self.assertIn("...[104 more characters]", text)
